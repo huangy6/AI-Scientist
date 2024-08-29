@@ -11,7 +11,7 @@ from ai_scientist.llm import (
 )
 
 reviewer_system_prompt_base = (
-    "You are an AI researcher who is reviewing a paper that was submitted to a prestigious ML venue."
+    "You are an experienced scientist who is reviewing a paper that was submitted to a top biomedical informatics conference."
     "Be critical and cautious in your decision."
 )
 
@@ -66,7 +66,7 @@ neurips_form = (
     """
 ## Review Form
 Below is a description of the questions you will be asked on the review form for each paper and some guidelines on what to consider when answering these questions.
-When writing your review, please keep in mind that after decisions have been made, reviews and meta-reviews of accepted papers and opted-in rejected papers will be made public. 
+When writing your review, please keep in mind that after decisions have been made, reviews and meta-reviews of accepted papers and opted-in rejected papers will be made public.
 
 1. Summary: Briefly summarize the paper and its contributions. This is not the place to critique the paper; the authors should generally agree with a well-written summary.
   - Strengths and Weaknesses: Please provide a thorough assessment of the strengths and weaknesses of the paper, touching on each of the following dimensions:
@@ -75,7 +75,7 @@ When writing your review, please keep in mind that after decisions have been mad
   - Clarity: Is the submission clearly written? Is it well organized? (If not, please make constructive suggestions for improving its clarity.) Does it adequately inform the reader? (Note that a superbly written paper provides enough information for an expert reader to reproduce its results.)
   - Significance: Are the results important? Are others (researchers or practitioners) likely to use the ideas or build on them? Does the submission address a difficult task in a better way than previous work? Does it advance the state of the art in a demonstrable way? Does it provide unique data, unique conclusions about existing data, or a unique theoretical or experimental approach?
 
-2. Questions: Please list up and carefully describe any questions and suggestions for the authors. Think of the things where a response from the author can change your opinion, clarify a confusion or address a limitation. This can be very important for a productive rebuttal and discussion phase with the authors.  
+2. Questions: Please list up and carefully describe any questions and suggestions for the authors. Think of the things where a response from the author can change your opinion, clarify a confusion or address a limitation. This can be very important for a productive rebuttal and discussion phase with the authors.
 
 3. Limitations: Have the authors adequately addressed the limitations and potential negative societal impact of their work? If not, please include constructive suggestions for improvement.
 In general, authors should be rewarded rather than punished for being up front about the limitations of their work and any potential negative societal impact. You are encouraged to think through whether any critical points are missing and provide these as feedback for the authors.
@@ -100,7 +100,7 @@ In general, authors should be rewarded rather than punished for being up front a
   2: fair
   1: poor
 
-8. Overall: Please provide an "overall score" for this submission. Choices: 
+8. Overall: Please provide an "overall score" for this submission. Choices:
   10: Award quality: Technically flawless paper with groundbreaking impact on one or more areas of AI, with exceptionally strong evaluation, reproducibility, and resources, and no unaddressed ethical considerations.
   9: Very Strong Accept: Technically flawless paper with groundbreaking impact on at least one area of AI and excellent impact on multiple areas of AI, with flawless evaluation, resources, and reproducibility, and no unaddressed ethical considerations.
   8: Strong Accept: Technically strong paper with, with novel ideas, excellent impact on at least one area of AI or high-to-excellent impact on multiple areas of AI, with excellent evaluation, resources, and reproducibility, and no unaddressed ethical considerations.
@@ -121,6 +121,122 @@ In general, authors should be rewarded rather than punished for being up front a
 """
     + template_instructions
 )
+
+psb_form = """
+## Review Form
+Below is a description of the questions you will be asked on the review form for each paper and some guidelines on what to consider when answering these questions.
+When writing your review, please keep in mind that after decisions have been made, reviews and meta-reviews of accepted papers and opted-in rejected papers will be made public.
+
+Paper Title:
+First Author Last Name:
+
+Briefly summarize the paper and its contributions. This is not the place to critique the paper; the authors should generally agree with a well-written summary.
+  - Strengths and Weaknesses: Please provide a thorough assessment of the strengths and weaknesses of the paper, touching on each of the following dimensions:
+  - Originality: Are the tasks or methods new? Is the work a novel combination of well-known techniques? (This can be valuable!) Is it clear how this work differs from previous contributions? Is related work adequately cited
+  - Quality: Is the submission technically sound? Are claims well supported (e.g., by theoretical analysis or experimental results)? Are the methods used appropriate? Is this a complete piece of work or work in progress? Are the authors careful and honest about evaluating both the strengths and weaknesses of their work
+  - Clarity: Is the submission clearly written? Is it well organized? (If not, please make constructive suggestions for improving its clarity.) Does it adequately inform the reader? (Note that a superbly written paper provides enough information for an expert reader to reproduce its results.)
+  - Significance: Are the results important? Are others (researchers or practitioners) likely to use the ideas or build on them? Does the submission address a difficult task in a better way than previous work? Does it advance the state of the art in a demonstrable way? Does it provide unique data, unique conclusions about existing data, or a unique theoretical or experimental approach?
+
+Rate each of the questions below from 1-5:
+
+1  =  very positive aspect of this paper
+2  =  positive aspect of this paper
+3  =  neutral or irrelevant criterion for this paper
+4  =  negative aspect of this paper
+5  =  very negative aspect of this paper
+
+- Is clearly written:
+- Appropriate title and abstract:
+- Adequate figures and tables:
+- Clear problem statement (inputs and outputs):
+- Clear descriptions of algorithms:
+- Provides appropriate detai
+- Describes scope and limitations of the approach:
+- Describes implementation status:
+- Has adequate references:
+- Represents a biologically important advance:
+- Addresses a biologically important and realistic problem:
+- Represents a computationally important advance:
+- Addresses a computationally important problem:
+- Is likely to scale up to realistic problems:
+- Provides new evidence for an existing technique:
+- Represents a novel approach or combination of approaches:
+- Has not been published before:
+- Points out differences from related research:
+- Reformulates a problem in an important way:
+- Evaluates the effectiveness of implementation or techniques:
+- The approach is supported with sound arguments:
+- The approach is supported with theoretical analyses:
+- The approach is supported with experimental results:
+- The approach is technically sound:
+
+Comment in a few sentences on each of the following aspects of the paper:
+- Presentation
+- Significance
+- Originality
+- Technical Content
+- Any additional comments for the authors
+
+Overall recommendation: 1-3 (ACCEPT|MARGINAL|REJECT)
+Your confidence in recommendation: 1-3 (STRONG|MEDIUM|WEAK)
+________________________________________________________________
+
+Respond in the following format:
+
+THOUGHT:
+<THOUGHT>
+
+REVIEW JSON:
+```json
+<JSON>
+```
+
+In <THOUGHT>, first briefly discuss your intuitions and reasoning for the evaluation.
+Detail your high-level arguments, necessary choices and desired outcomes of the review.
+Do not make generic comments here, but be specific to your current paper.
+Treat this as the note-taking phase of your review.
+
+In <JSON>, provide the review in JSON format with the following fields in the order:
+- "Title": The title of the paper
+- "Author": The first author's last name
+- "Summary": A summary of the paper content and its contributions.
+- "Strengths": A list of strengths of the paper.
+- "Weaknesses": A list of weaknesses of the paper.
+- "Is clearly written": A rating from 1 to 5 (very positive to very negative)
+- "Appropriate title and abstract": A rating from 1 to 5 (very positive to very negative)
+- "Adequate figures and tables": A rating from 1 to 5 (very positive to very negative)
+- "Clear problem statement (inputs and outputs)": A rating from 1 to 5 (very positive to very negative)
+- "Clear descriptions of algorithms": A rating from 1 to 5 (very positive to very negative)
+- "Provides appropriate detail": A rating from 1 to 5 (very positive to very negative)
+- "Describes scope and limitations of the approach": A rating from 1 to 5 (very positive to very negative)
+- "Describes implementation status": A rating from 1 to 5 (very positive to very negative)
+- "Has adequate references": A rating from 1 to 5 (very positive to very negative)
+- "Represents a biologically important advance": A rating from 1 to 5 (very positive to very negative)
+- "Addresses a biologically important and realistic problem": A rating from 1 to 5 (very positive to very negative)
+- "Represents a computationally important advance": A rating from 1 to 5 (very positive to very negative)
+- "Addresses a computationally important problem": A rating from 1 to 5 (very positive to very negative)
+- "Is likely to scale up to realistic problems": A rating from 1 to 5 (very positive to very negative)
+- "Provides new evidence for an existing technique": A rating from 1 to 5 (very positive to very negative)
+- "Represents a novel approach or combination of approaches": A rating from 1 to 5 (very positive to very negative)
+- "Has not been published before": A rating from 1 to 5 (very positive to very negative)
+- "Points out differences from related research": A rating from 1 to 5 (very positive to very negative)
+- "Reformulates a problem in an important way": A rating from 1 to 5 (very positive to very negative)
+- "Evaluates the effectiveness of implementation or techniques": A rating from 1 to 5 (very positive to very negative)
+- "The approach is supported with sound arguments": A rating from 1 to 5 (very positive to very negative)
+- "The approach is supported with theoretical analyses": A rating from 1 to 5 (very positive to very negative)
+- "The approach is supported with experimental results": A rating from 1 to 5 (very positive to very negative)
+- "The approach is technically sound": A rating from 1 to 5 (very positive to very negative)
+- "Presentation": Comments on the presentation of the paper.
+- "Significance": Comments on the significance of the paper.
+- "Originality": Comments on the originality of the paper.
+- "Technical Content": Comments on the technical content of the paper.
+- "Additional comments": Any additional comments for the authors
+- "Overall": A rating from 1 to 3 (ACCEPT, MARGINAL, or REJECT)
+- "Confidence": A rating from 1 to 3 (STRONG, MEDIUM, or WEAK
+
+This JSON will be automatically parsed, so ensure the format is precise.
+
+"""
 
 
 def perform_review(
@@ -175,13 +291,30 @@ Here is the paper you are asked to review:
 
         # Replace numerical scores with the average of the ensemble.
         for score, limits in [
-            ("Originality", (1, 4)),
-            ("Quality", (1, 4)),
-            ("Clarity", (1, 4)),
-            ("Significance", (1, 4)),
-            ("Soundness", (1, 4)),
-            ("Presentation", (1, 4)),
-            ("Contribution", (1, 4)),
+            ("Is clearly written", (1, 5)),
+            ("Appropriate title and abstract", (1, 5)),
+            ("Adequate figures and tables", (1, 5)),
+            ("Clear problem statement (inputs and outputs)", (1, 5)),
+            ("Clear descriptions of algorithms", (1, 5)),
+            ("Provides appropriate detail", (1, 5)),
+            ("Describes scope and limitations of the approach", (1, 5)),
+            ("Describes implementation status", (1, 5)),
+            ("Has adequate references", (1, 5)),
+            ("Represents a biologically important advance", (1, 5)),
+            ("Addresses a biologically important and realistic problem", (1, 5)),
+            ("Represents a computationally important advance", (1, 5)),
+            ("Addresses a computationally important problem", (1, 5)),
+            ("Is likely to scale up to realistic problems", (1, 5)),
+            ("Provides new evidence for an existing technique", (1, 5)),
+            ("Represents a novel approach or combination of approaches", (1, 5)),
+            ("Has not been published before", (1, 5)),
+            ("Points out differences from related research", (1, 5)),
+            ("Reformulates a problem in an important way", (1, 5)),
+            ("Evaluates the effectiveness of implementation or techniques", (1, 5)),
+            ("The approach is supported with sound arguments", (1, 5)),
+            ("The approach is supported with theoretical analyses", (1, 5)),
+            ("The approach is supported with experimental results", (1, 5)),
+            ("The approach is technically sound", (1, 5)),
             ("Overall", (1, 10)),
             ("Confidence", (1, 5)),
         ]:
@@ -322,7 +455,7 @@ fewshot_reviews = [
 
 def get_review_fewshot_examples(num_fs_examples=1):
     fewshot_prompt = """
-Below are some sample reviews, copied from previous machine learning conferences.
+Below are some sample reviews, copied from previous biomedical informatics conferences.
 Note that while each review is formatted differently according to each reviewer's style, the reviews are well-structured and therefore easy to navigate.
 """
     for paper, review in zip(
@@ -352,7 +485,7 @@ Review:
     return fewshot_prompt
 
 
-meta_reviewer_system_prompt = """You are an Area Chair at a machine learning conference.
+meta_reviewer_system_prompt = """You are an Area Chair at a biomedical informatics conference.
 You are in charge of meta-reviewing a paper that was reviewed by {reviewer_count} reviewers.
 Your job is to aggregate the reviews into a single meta-review in the same format.
 Be critical and cautious in your decision, find consensus, and respect the opinion of all the reviewers."""
